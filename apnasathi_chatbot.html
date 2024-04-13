@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        .chat-container {
+            width: 350px;
+            height: 500px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .chat-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .chat-message {
+            background-color: #f1f0f0;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #d4edda;
+            align-self: flex-end;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            background-color: #f8f9fa;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+        }
+
+        .chat-input button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">ChatBot</div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-message">Hello! How can I help you?</div>
+        </div>
+        <form onsubmit="sendMessage(); return false;">
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button type="submit">Send</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userMessage = document.getElementById('user-input').value;
+            if (userMessage.trim() === '') return;
+            document.getElementById('chat-body').innerHTML += '<div class="chat-message user-message">' + userMessage + '</div>';
+            document.getElementById('user-input').value = '';
+            setTimeout(function () {
+                var response = chatbotResponse(userMessage);
+                if (response === null) {
+                    response = "I am a Mental Health Chatbot, please ask me some question regarding health issues.";
+                }
+                document.getElementById('chat-body').innerHTML += '<div class="chat-message">' + response + '</div>';
+            }, 500);
+        }
+
+        function chatbotResponse(userMessage) {
+            var patterns = [
+                { pattern: /hi|hello|hey/i, responses: ['Hello!', 'Hi there!', 'Hey!'] },
+                { pattern: /how are you\?/i, responses: ['I am doing well, thank you!', 'I\'m fine, thanks!', 'Pretty good!'] },
+                { pattern: /what is your name\?/i, responses: ['My name is ChatBot.', 'You can call me ChatBot.', 'I\'m ChatBot.'] },
+                { pattern: /(.) your name(.)/i, responses: ['My name is ChatBot.', 'You can call me ChatBot.', 'I\'m ChatBot.'] },
+                { pattern: /.*help.*/i, responses: ['Sure, I can help you. What do you need help with?'] },
+                { pattern: /(.*) (location|city) ?/i, responses: ['I\'m a virtual assistant. But i live in your heart.'] },
+                { pattern: /bye|goodbye/i, responses: ['Goodbye!', 'Bye!', 'Take care!'] },
+                { pattern: /I am feeling sad/i, responses: ['I am here to listen. What\'s on your mind?', 'It\'s okay to feel this way. I\'m here for you.'] },
+                { pattern: /Can you talk to me\?/i, responses: ['Of course! What would you like to talk about?', 'I\'m here to chat. What\'s on your mind?'] },
+                { pattern: /Tell me a joke/i, responses: ['Why don’t scientists trust atoms? Because they make up everything!', 'How does a penguin build its house? Igloos it together!', 'Why do not skeletons fight each other? They do not have the guts!'] },
+                { pattern: /What do you like to do\?/i, responses: ['I like to talk to you because you are my friend and also learning new things.'] },
+                { pattern: /What is your favourite color\?/i, responses: ['what is the color of your eyes, that is my favorite color.'] },
+                { pattern: /What is the meaning of life\?/i, responses: ['The meaning of life is a philosophical question. In simpler terms, the meaning of life is about finding happiness, fulfillment, and purpose in whatever way makes sense to you. It could be through relationships, achievements, helping others, or simply enjoying the journey. It is about living a life that feels meaningful and satisfying to you.'] },
+                { pattern: /How old are you\?/i, responses: ['I am a computer program, so I don\'t have an age.'] },
+                { pattern: /I am feeling stressed/i, responses: ['I understand. It is a common feeling. Would you like to talk about what\'s causing your stress?'] },
+                { pattern: /How can I reduce stress\?/i, responses: ['There are many ways to reduce stress, such as deep breathing, meditation, exercise, and spending time with loved ones.'] },
+                { pattern: /What are some stress management techniques\?/i, responses: ['Some stress management techniques include mindfulness, relaxation techniques, and seeking support from friends, family, or a therapist.'] },
+                { pattern: /How do I deal with anxiety\?/i, responses: ['To deal with anxiety, it can be helpful to practice relaxation techniques, challenge negative thoughts, and seek support from a therapist or counselor.'] },
+                { pattern: /What are the signs of burnout\?/i, responses: ['Signs of burnout include exhaustion, feeling detached from work or personal life, and reduced performance. It\'s important to take steps to address burnout, such as taking breaks and seeking support.'] },
+                { pattern: /How can I improve my mental health\?/i, responses: ['To improve your mental health, it can be helpful to practice self-care, seek support from friends or a therapist, and engage in activities that bring you joy.'] },
+                { pattern: /What are some self-care tips for mental health\?/i, responses: ['Some self-care tips for mental health include getting enough sleep, eating well, exercising regularly, and setting aside time for hobbies or relaxation.'] },
+                { pattern: /How do I know if I need therapy\?/i, responses: ['You may consider therapy if you are experiencing persistent feelings of sadness, anxiety, or stress, or if you are having difficulty coping with daily life.'] },
+                { pattern: /What can I do to feel better when I am feeling down\?/i, responses: ['It can be helpful to engage in activities that lift your mood, such as spending time with loved ones, exercising, or doing something you enjoy.'] },
+                { pattern: /How do I practice mindfulness\?/i, responses: ['Mindfulness can be practiced by paying attention to the present moment without judgment. You can practice mindfulness through meditation, yoga, or simply by focusing on your breath.'] },
+                { pattern: /I want to end my life/i, responses: ['Why are you coward? As, i know you are a worrior. So, how you can do that.?'] },
+                { pattern: /How can I cope with suicidal thoughts\?/i, responses: ['Coping with suicidal thoughts can be challenging. It\'s important to talk to someone you trust and seek professional help.'] },
+                { pattern: /What should I do if I think someone is suicidal\?/i, responses: ['If you are concerned about someone who may be suicidal, it\'s important to talk to them openly and encourage them to seek help. You can also contact a mental health professional or a helpline for advice.'] },
+                { pattern: /Can you help me with suicide prevention\?/i, responses: ['I can provide you with information and resources on suicide prevention. It\'s important to talk to a mental health professional for personalized support.'] },
+                { pattern: /Is there a suicide hotline I can call\?/i, responses: ['Yes, there are suicide hotlines available in many countries. I can help you find a hotline in your area.'] },
+                { pattern: /What are some warning signs of suicide\?/i, responses: ['Warning signs of suicide include talking about wanting to die, feeling hopeless or trapped, and withdrawing from friends and family.'] },
+                { pattern: /How can I support someone who is suicidal\?/i, responses: ['You can support someone who is suicidal by listening to them without judgment, encouraging them to seek help, and staying connected with them.'] },
+                { pattern: /Who is Shakil\?/i, responses: ['ekdam smart.']}
+            ];
+
+            
+            for (var i = 0; i < patterns.length; i++) {
+                if (userMessage.match(patterns[i].pattern)) {
+                    return patterns[i].responses[Math.floor(Math.random() * patterns[i].responses.length)];
+                }
+            }
+
+            return "I am a Mental Health Chatbot, please ask me some question regarding health issues.";
+        }
+
+    </script>
+</body>
+
+</html>
